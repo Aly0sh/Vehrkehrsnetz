@@ -31,8 +31,18 @@ public abstract class Roadmap {
         return currentLine;
     }
 
-    public void show() {
-        stations.stream().forEach((i) -> System.out.print(i + " "));
+    public String show() {
+        StringBuilder res = new StringBuilder();
+        String prevLine = lines.getFirst();
+        for (int i = 0; i < stations.size(); i++) {
+            res.append(stations.get(i)).append(" (");
+            if (!prevLine.equals(lines.get(i + 1))) {
+                res.append("Change to ");
+            }
+            res.append(lines.get(i + 1)).append(")\n");
+            prevLine = lines.get(i + 1);
+        }
+        return res.toString();
     }
 
     public abstract boolean move();

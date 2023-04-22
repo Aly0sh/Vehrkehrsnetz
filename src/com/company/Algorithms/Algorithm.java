@@ -104,6 +104,7 @@ public class Algorithm {
                     }
                 }
                 if (paths.get(i).getStations().getLast().equals(endStation)) {
+                    paths.get(i).addLines(paths.get(i).getCurrentLine());
                     return paths.get(i);
                 }
             }

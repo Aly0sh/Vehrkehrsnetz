@@ -21,9 +21,9 @@ class StationsReaderTest {
         String requiredResult = "Buyuk Ipak Yuli\n" +
                 "Pushkin\n" +
                 "Hamid Olimjon\n" +
-                "Amir Temur Xiyoboni - Yunus Rajabiy\n" +
+                "Amir Temur Xiyoboni - Yunus Rajabiy\n" +
                 "Mustaqilliq Maidoni\n" +
-                "Paxtakor - Alisher Navoiy\n" +
+                "Paxtakor - Alisher Navoiy\n" +
                 "Bunyodkor\n" +
                 "Milliy Bog\n" +
                 "Novza\n" +
