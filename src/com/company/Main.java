@@ -1,15 +1,20 @@
 package com.company;
 
 import com.company.Algorithms.Algorithm;
+import com.company.GUI.MainFrame;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Algorithm algorithm = new Algorithm("Paxtakor - Alisher Navoiy", "Ming Urik - Oybek");
+// выполняем алгоритм
+
+        Algorithm algorithm = new Algorithm("Paxtakor - Alisher Navoiy", "Pushkin");
+
         algorithm.start();
-        System.out.println(algorithm.getShortestPath().show());
 
+        algorithm.getShortestPath();
 
+        MainFrame mainFrame = new MainFrame();
     }
 }

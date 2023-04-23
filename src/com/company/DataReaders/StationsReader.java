@@ -13,7 +13,7 @@ public class StationsReader {
         LinkedList<String> stations = new LinkedList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null && !line.isEmpty()) {
                 stations.add(line);
             }
         } catch (IOException e) {

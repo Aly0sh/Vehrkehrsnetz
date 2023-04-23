@@ -45,6 +45,23 @@ public abstract class Roadmap {
         return res.toString();
     }
 
+    public LinkedList<String> getResultAsList() {
+        LinkedList<String> resList = new LinkedList<>();
+        StringBuilder res;
+        String prevLine = lines.getFirst();
+        for (int i = 0; i < stations.size(); i++) {
+            res = new StringBuilder();
+            res.append(stations.get(i)).append(" (");
+            if (!prevLine.equals(lines.get(i + 1))) {
+                res.append("Change to ");
+            }
+            res.append(lines.get(i + 1)).append(")");
+            prevLine = lines.get(i + 1);
+            resList.addLast(res.toString());
+        }
+        return resList;
+    }
+
     public abstract boolean move();
 
     public static class RoadmapBuilder {

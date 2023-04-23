@@ -8,14 +8,17 @@ import java.util.*;
 
 public class Algorithm {
     private Map<String, LinkedList<String>> stations;
+    private List<String> visited;
     private String startStation;
     private String endStation;
     private Roadmap shortestPath;
+    private List<Roadmap> pathsForV;
 
     public Algorithm(String startStation, String endStation) {
         this.startStation = startStation;
         this.endStation = endStation;
         stations = getStations();
+        visited = new ArrayList<>();
     }
 
     public Map<String, LinkedList<String>> getStations() {
@@ -49,6 +52,7 @@ public class Algorithm {
                             .build()
             );
         }
+        visited.add(startStation);
         shortestPath = findShortestPath(paths);
     }
 
@@ -77,10 +81,13 @@ public class Algorithm {
 
     public Roadmap findShortestPath(List<Roadmap> paths) {
         List<Roadmap> removeList = new ArrayList<>();
+
         while (!paths.isEmpty()) {
             for (int i = 0; i < paths.size(); i++) {
-                if (!paths.get(i).move()) {
+                if (!paths.get(i).move() || visited.contains(paths.get(i).getStations().getLast())) {
                     removeList.add(paths.get(i));
+                } else {
+                    visited.add(paths.get(i).getStations().getLast());
                 }
 
                 if (paths.get(i).getStations().getLast().contains("-")) {
@@ -105,16 +112,22 @@ public class Algorithm {
                 }
                 if (paths.get(i).getStations().getLast().equals(endStation)) {
                     paths.get(i).addLines(paths.get(i).getCurrentLine());
+                    pathsForV = paths;
                     return paths.get(i);
                 }
             }
             paths.removeAll(removeList);
             removeList.clear();
         }
+        pathsForV = paths;
         return null;
     }
 
     public Roadmap getShortestPath() {
         return shortestPath;
+    }
+
+    public List<Roadmap> getPathsForV() {
+        return pathsForV;
     }
 }
