@@ -13,14 +13,12 @@ public class Algorithm {
     private String startStation;
     private String endStation;
     private Roadmap shortestPath; // Kürzester Weg
-    private List<Roadmap> pathsForV; // Wegliste für die GUI
 
     public Algorithm(String startStation, String endStation) {
         this.startStation = startStation;
         this.endStation = endStation;
         stations = getStations();
         visited = new ArrayList<>();
-        pathsForV = new ArrayList<>();
     }
 
     // Methode zum Ausfüllen des Wörterbuchs mit allen Stationen
@@ -100,7 +98,6 @@ public class Algorithm {
                 // Überprüfung, ob der kürzeste Pfad gefunden wurde
                 if (paths.get(i).getStations().getLast().equals(endStation)) {
                     paths.get(i).addLines(paths.get(i).getCurrentLine());
-                    pathsForV.addAll(paths); // Vor dem Abschluss werden alle durchlaufenen Pfade zur Visualisierungsliste hinzugefügt
                     return paths.get(i);
                 }
 
@@ -136,11 +133,9 @@ public class Algorithm {
                     }
                 }
             }
-            pathsForV.addAll(removeList); // Vor dem Löschen der Pfade werden zur Visualisierungsliste hinzugefügt
             paths.removeAll(removeList); // Löschen von Pfaden ohne Fortsetzung
             removeList.clear();
         }
-        pathsForV.addAll(paths); // Vor dem Abschluss werden alle durchlaufenen Pfade zur Visualisierungsliste hinzugefügt
         return null;
     }
 
@@ -148,7 +143,4 @@ public class Algorithm {
         return shortestPath;
     }
 
-    public List<Roadmap> getPathsForV() {
-        return pathsForV;
-    }
 }
