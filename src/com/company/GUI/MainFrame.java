@@ -1,11 +1,7 @@
 package com.company.GUI;
 
-import com.company.Models.Roadmap;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.image.ImageObserver;
 
 public class MainFrame {
 
@@ -94,7 +90,7 @@ public class MainFrame {
         frame.getContentPane().add(form);
 
         tNetwork = new JPanel();
-        graphVisualization = new GraphVisualization();
+        graphVisualization = new GraphVisualization(this);
         tNetwork.setBorder(BorderFactory.createTitledBorder("Verkehrsnetz"));
         tNetwork.setBounds(260, 0, 620, 360);
         tNetwork.add(graphVisualization.getVv());
@@ -111,6 +107,14 @@ public class MainFrame {
 
     public String getEndStation() {
         return endStationText.getText();
+    }
+
+    public void setStartStation(String station) {
+        startStationText.setText(station);
+    }
+
+    public void setEndStation(String station) {
+        endStationText.setText(station);
     }
 
     public void reset() {

@@ -6,21 +6,24 @@ import com.company.Models.Roadmap;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseGraph;
-import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import edu.uci.ics.jung.visualization.renderers.Renderer;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class GraphVisualization {
+    private MainFrame mainFrame;
     private Graph<String, String> graph;
     private Map<String, Paint> colors = new HashMap<>();
     private Map <String, LinkedList<String>> map;
@@ -28,13 +31,20 @@ public class GraphVisualization {
     private VisualizationViewer<String, String> vv;
     private DefaultModalGraphMouse<String, String> gm;
     private List<Roadmap> pathsForV;
+    private List<String> visitedEdges;
+    private List<String> visitedMainEdges;
+    private LinkedList<List<String>> edges;
+    private LinkedList<String> mainEdges;
 
-    public GraphVisualization() {
+    public GraphVisualization(MainFrame mainFrame) {
         graph = new SparseGraph<>();
         map = getStations();
         fillGraph();
         prepare();
         paintVertex();
+        visitedEdges = new ArrayList<>();
+        visitedMainEdges = new ArrayList<>();
+        this.mainFrame = mainFrame;
     }
 
     public void fillGraph() {
@@ -59,7 +69,34 @@ public class GraphVisualization {
         vv.getRenderContext().setEdgeShapeTransformer(EdgeShape.line(graph));
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
         vv.setGraphMouse(gm);
-        vv.setPreferredSize(new Dimension(600, 320));
+        vv.setPreferredSize(new Dimension(600, 600));
+        vv.getRenderContext().setEdgeDrawPaintTransformer(edge -> {
+            if (visitedMainEdges.contains(edge)) {
+                return Color.GREEN;
+            } else if (visitedEdges.contains(edge)) {
+                return Color.RED;
+            }
+            return Color.BLACK;
+        });
+        vv.getPickedVertexState().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                System.out.println(e.getItem());
+            }
+        });
+
+        vv.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point2D p = e.getPoint();
+                String vertex = vv.getPickSupport().getVertex(vv.getGraphLayout(), p.getX(), p.getY());
+                if (mainFrame.getStartStation().isEmpty()) {
+                    mainFrame.setStartStation(vertex);
+                } else if (mainFrame.getEndStation().isEmpty()) {
+                    mainFrame.setEndStation(vertex);
+                }
+            }
+        });
     }
 
     public void paintVertex() {
@@ -92,19 +129,49 @@ public class GraphVisualization {
         this.pathsForV = pathsForV;
     }
 
-    public void startPaintingEdge() {
-        for (Roadmap r : pathsForV) {
-            vv.getRenderContext().setEdgeFillPaintTransformer(
-                    edge -> {
-                        for (int i = 0; i < r.getStations().size() - 1; i++) {
-                            if (edge.equals(graph.findEdge(r.getStations().get(i), r.getStations().get(i + 1)))) {
-                                return Color.RED;
-                            }
-                        }
-                        return Color.BLACK;
-                    }
-            );
+    public void setMainEdges(LinkedList<String> mainEdges) {
+        this.mainEdges = mainEdges;
+    }
+
+    private void TPathsForV() {
+        int i = 0;
+        boolean flag = true;
+        edges = new LinkedList<>();
+        List<String> cEdges;
+        while (flag) {
+            flag = false;
+            cEdges = new ArrayList<>();
+            for (Roadmap r : pathsForV) {
+                if (r.getStations().size() - 1 > i) {
+                    cEdges.add(graph.findEdge(r.getStations().get(i), r.getStations().get(i + 1)));
+                    flag = true;
+                }
+            }
+            if (!cEdges.isEmpty()) {
+                edges.addLast(cEdges);
+            }
+            i++;
+        }
+    }
+
+    public void drawEdges() {
+        TPathsForV();
+        visitedEdges = new ArrayList<>();
+        visitedMainEdges = new ArrayList<>();
+        for (List<String> i : edges) {
+            for (String j : i) {
+                visitedEdges.add(j);
+            }
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             vv.repaint();
         }
+        for (int i = 0; i < mainEdges.size() - 1; i++) {
+            visitedMainEdges.add(graph.findEdge(mainEdges.get(i), mainEdges.get(i + 1)));
+        }
+        vv.repaint();
     }
 }

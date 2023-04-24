@@ -2,8 +2,6 @@ package com.company.GUI;
 
 import com.company.Algorithms.Algorithm;
 
-import javax.swing.*;
-
 public class Model {
     private MainFrame mainFrame;
     private Algorithm algorithm;
@@ -32,7 +30,13 @@ public class Model {
                     }
                     mainFrame.reset();
                     mainFrame.getGraphVisualization().setPathsForV(algorithm.getPathsForV());
-                    mainFrame.getGraphVisualization().startPaintingEdge();
+                    mainFrame.getGraphVisualization().setMainEdges(algorithm.getShortestPath().getStations());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainFrame.getGraphVisualization().drawEdges();
+                        }
+                    }).start();
                 }
                 mainFrame.getListModel().addElement("");
                 mainFrame.getListModel().addElement("____________________________________");
