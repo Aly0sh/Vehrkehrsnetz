@@ -3,23 +3,24 @@ package com.company.GUI;
 import javax.swing.*;
 import java.awt.*;
 
+// Viewer für die Hauptseite
 public class MainFrame {
 
-    private JFrame frame;
-    private JPanel form;
-    private JPanel tNetwork;
-    private JPanel buttons;
-    private JLabel startStation;
-    private JLabel endStation;
-    private JLabel result;
-    private JTextField startStationText;
-    private JTextField endStationText;
-    private JButton submit;
-    private JButton reset;
-    private DefaultListModel<String> listModel;
-    private JList<String> resultList;
-    private JScrollPane resultBox;
-    private GraphVisualization graphVisualization;
+    private JFrame frame; // Hauptfenster
+    private JPanel form; // Panel für alle Eingabe- und Ausgabefelder
+    private JPanel tNetwork; // Panel für die Graph Visualisation
+    private JPanel buttons; // Panel für Schaltflächen
+    private JLabel startStation; // Das Label des Textfeldes für die Startstation
+    private JLabel endStation; // Das Label des Textfeldes für die Zielstation
+    private JLabel result; // Das Label für die Ausgabe
+    private JTextField startStationText; // "TextField" für die Eingabe der Startstation
+    private JTextField endStationText; // "TextField" für die Eingabe der Zielstation
+    private JButton submit; // "Absenden"-Taste
+    private JButton reset; // "Zurücksetzen"-Taste
+    private DefaultListModel<String> listModel; // ListModel von der Ausgabe
+    private JList<String> resultList; // JList von der Ausgabe
+    private JScrollPane resultBox; // ScrollPane von der Ausgabe
+    private GraphVisualization graphVisualization; // Visualisierung des Graphen
 
     public MainFrame() {
         frame = new JFrame("Der kürzeste Weg finden");
@@ -40,8 +41,9 @@ public class MainFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    // Die Initialisierung aller GUI-Komponenten
     private void prepare() {
-        Controller controller = new Controller(this);
+        Controller controller = new Controller(this); // Übertragung MainFrame zur Verfolgung aller Aktionen
         form = new JPanel();
         form.setBorder(BorderFactory.createTitledBorder("Form"));
         form.setLayout(null);
@@ -66,7 +68,7 @@ public class MainFrame {
         buttons = new JPanel();
         buttons.setLayout(new GridLayout(1, 2, 5, 10));
 
-        submit = new JButton("Senden");
+        submit = new JButton("Absenden");
         submit.addActionListener(controller);
         submit.setActionCommand("submit");
         reset = new JButton("Zurücksetzen");
@@ -117,6 +119,7 @@ public class MainFrame {
         endStationText.setText(station);
     }
 
+    // Der Methode zum Löschen des Textfelds für Start- und Zielstationen
     public void reset() {
         startStationText.setText("");
         endStationText.setText("");

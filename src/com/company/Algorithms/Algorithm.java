@@ -38,7 +38,7 @@ public class Algorithm {
         List<String> lines = findLines(startStation); // Liste aller Linien, auf denen sich der Startstation befindet
         for (int i = 0; i < lines.size(); i++) {
             paths.add(
-                    new Roadmap.RoadmapBuilder().newAhead() // Hinzufügen des Pfads zur Liste, der von der Startstation aus vorwärts geht
+                    new Roadmap.RoadmapBuilder().newAhead() // Hinzufügen des Pfads zur Liste, der von der Startstation aus vorwärtsgeht
                             .addStation(startStation)
                             .addLine(lines.get(i))
                             .setCurrentIndex(stations.get(lines.get(i)).indexOf(startStation))

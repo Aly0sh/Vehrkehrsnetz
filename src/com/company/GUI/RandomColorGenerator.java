@@ -3,6 +3,7 @@ package com.company.GUI;
 import java.awt.*;
 import java.util.Random;
 
+// Klasse zur Generierung zufälliger Farben
 public class RandomColorGenerator {
     private Random random;
     private float hue;

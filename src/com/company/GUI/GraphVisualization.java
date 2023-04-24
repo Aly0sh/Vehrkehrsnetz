@@ -9,32 +9,30 @@ import edu.uci.ics.jung.graph.SparseGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.List;
 
+// Die Hauptklasse zum Rendern von Graph
 public class GraphVisualization {
     private MainFrame mainFrame;
-    private Graph<String, String> graph;
-    private Map<String, Paint> colors = new HashMap<>();
-    private Map <String, LinkedList<String>> map;
-    private FRLayout<String, String> layout;
-    private VisualizationViewer<String, String> vv;
-    private DefaultModalGraphMouse<String, String> gm;
-    private List<Roadmap> pathsForV;
-    private List<String> visitedEdges;
-    private List<String> visitedMainEdges;
-    private LinkedList<List<String>> edges;
-    private LinkedList<String> mainEdges;
+    private Graph<String, String> graph; // Die Variable zur Speicherung von Knoten und Kanten des Graphen
+    private Map<String, Paint> colors = new HashMap<>(); // Farben Wörterbuch für Linien
+    private Map <String, LinkedList<String>> map; // Wörterbuch für alle Stationen und Linien
+    private FRLayout<String, String> layout; // Ein kraft basiertes Layout-Algorithmus, der zur Darstellung von Graphen verwendet wird
+    private VisualizationViewer<String, String> vv; // Das Hauptfenster zur Visualisierung von Graphen
+    private DefaultModalGraphMouse<String, String> gm; // Ein Maus-Plugin für die Interaktion mit Graphen
+    private List<Roadmap> pathsForV; // Liste aller durchlaufenen Pfade
+    private List<String> visitedEdges; // besuchte Kanten
+    private List<String> visitedMainEdges; // Besuchte Kanten des kürzesten Pfades
+    private LinkedList<List<String>> edges; // Edge-Liste für die Visualisierung
+    private LinkedList<String> mainEdges; // Edge-Liste des kürzesten Pfades für die Visualisierung
 
     public GraphVisualization(MainFrame mainFrame) {
         graph = new SparseGraph<>();
@@ -47,6 +45,7 @@ public class GraphVisualization {
         this.mainFrame = mainFrame;
     }
 
+    // Zuordnung von Knoten und Kanten zum Graphen
     public void fillGraph() {
         for (String key : map.keySet()) {
             for (int i = 0; i < map.get(key).size() - 1; i++) {
@@ -56,9 +55,10 @@ public class GraphVisualization {
         }
     }
 
+    // Initialisierung aller Visualisierungskomponenten
     public void prepare() {
         layout = new FRLayout<>(graph);
-        layout.setMaxIterations(10000);
+        layout.setMaxIterations(10000); // Anzahl der Iterationen des Algorithmus zur Darstellung des Graphen
         layout.setAttractionMultiplier(0.5);
         layout.setRepulsionMultiplier(0.5);
 
@@ -66,10 +66,12 @@ public class GraphVisualization {
 
         gm = new DefaultModalGraphMouse<>();
         gm.setMode(DefaultModalGraphMouse.Mode.TRANSFORMING);
-        vv.getRenderContext().setEdgeShapeTransformer(EdgeShape.line(graph));
-        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+        vv.getRenderContext().setEdgeShapeTransformer(EdgeShape.line(graph)); // Alle Kanten werden gerader, ohne Biegungen
+        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller()); // Die Namen der Stationen neben den Knoten hinzufügen
         vv.setGraphMouse(gm);
         vv.setPreferredSize(new Dimension(600, 600));
+
+        // Animation zum Zeichnen der durchlaufenen Kanten
         vv.getRenderContext().setEdgeDrawPaintTransformer(edge -> {
             if (visitedMainEdges.contains(edge)) {
                 return Color.GREEN;
@@ -78,13 +80,8 @@ public class GraphVisualization {
             }
             return Color.BLACK;
         });
-        vv.getPickedVertexState().addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                System.out.println(e.getItem());
-            }
-        });
 
+        // Übertragung des Namen der Station, auf die der Benutzer geklickt hat
         vv.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -99,6 +96,7 @@ public class GraphVisualization {
         });
     }
 
+    // Die Einfärbung der Knoten in Abhängigkeit von den Linien
     public void paintVertex() {
         vv.getRenderContext().setVertexFillPaintTransformer(s -> {
             if (s.contains("-")) {
@@ -117,6 +115,7 @@ public class GraphVisualization {
         return vv;
     }
 
+    // Der Methode zum Abrufen aller Stationen
     public Map<String, LinkedList<String>> getStations() {
         Map<String, LinkedList<String>> stations = new HashMap<>();
         for (String name : LineReader.checkDirectory("src/com/company/Lines")) {
@@ -133,6 +132,7 @@ public class GraphVisualization {
         this.mainEdges = mainEdges;
     }
 
+    // Methode zur Änderung aller erhaltenen durchlaufenen Pfade in eine bequemere Liste für die Animation
     private void TPathsForV() {
         int i = 0;
         boolean flag = true;
@@ -154,6 +154,7 @@ public class GraphVisualization {
         }
     }
 
+    // Eine Animation für die durchlaufenen Pfade erstellen
     public void drawEdges() {
         TPathsForV();
         visitedEdges = new ArrayList<>();
