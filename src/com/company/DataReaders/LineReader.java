@@ -7,7 +7,7 @@ import java.util.List;
 // Klasse zur Überprüfung von Verzeichnissen
 public class LineReader {
 
-    // Method zur Erlangung einer Liste aller Zeilen
+    // Method zur Erlangung einer Liste aller Dateien
     public static List<String> checkDirectory(String path) {
         List<String> fileNames = new ArrayList<>();
         try {
